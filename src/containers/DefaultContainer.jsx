@@ -1,4 +1,5 @@
 import React from 'react';
+import GameRoom from './GameRoom';
 
 class DefaultContainer extends React.Component {
   // constructor(props) {
@@ -22,6 +23,7 @@ class DefaultContainer extends React.Component {
         </a>
 
         <h1>Hangman X2</h1>
+        <GameRoom />
       </>
     );
   }

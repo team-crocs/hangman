@@ -7,5 +7,7 @@ export const UPDATE_DISPLAY_ANSWER = 'UPDATE_DISPLAY_ANSWER';
 
 export const NEW_QUESTION = 'NEW_QUESTION';
 export const CHECK_WIN = 'CHECK_WIN';
+export const ADD_ROOM = 'ADD_ROOM'
+export const LOAD_ROOMS = 'LOAD_ROOMS'
 // unused
 // export const RESET_GAME = 'RESET_GAME';
