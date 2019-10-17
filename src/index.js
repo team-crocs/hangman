@@ -1,5 +1,22 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import App from "./App.js";
+/* eslint-disable no-undef */
+/* eslint-disable react/jsx-filename-extension */
+// this is entry point for webpack
 
-ReactDOM.render(<App />, document.getElementById("root"));
+import React from 'react';
+import { render } from 'react-dom';
+import { Provider } from 'react-redux';
+import App from './App';
+import store from './store';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
+
+const hist = createBrowserHistory();
+
+render(
+  <Provider store={store}>
+    <Router history={hist}>
+      <App /> 
+    </Router>
+  </Provider>,
+  document.getElementById('root'),
+);

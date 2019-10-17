@@ -10,7 +10,7 @@ module.exports = {
         test: /\.(js|jsx)$/,
         exclude: /(node_modules|bower_components)/,
         loader: 'babel-loader',
-        options: { presets: ['@babel/env'] },
+        options: { presets: ['@babel/env', '@babel/preset-react'] },
       },
       {
         test: /\.css$/,
@@ -25,24 +25,34 @@ module.exports = {
     filename: 'bundle.js',
   },
   devServer: {
+    historyApiFallback: true,
     contentBase: path.join(__dirname, 'public/'),
-    port: 3000,
+    // !DEFAULT PORT IS 8080
+    // port: 3000,
     publicPath: 'http://localhost:3000/dist/',
-    // hotOnly: true,
-    proxy: {
-      // https://webpack.js.org/configuration/dev-server/#devserver-proxy
-      // return true for the context which means for all endpoints, proxy to the target
-      // the index also had to be set
-      context: () => true,
-      target: 'http://localhost:80',
-    },
+    hot: true,
     // proxy: {
-    //   '/api': {
-    //     target: "http://localhost:4000",
-    //     changeOrigin: true,
-    //   }
-
+    //   // https://webpack.js.org/configuration/dev-server/#devserver-proxy
+    //   // return true for the context which means for all endpoints, proxy to the target
+    //   // the index also had to be set
+    //   context: () => true,
+    //   // !Original port was 80
+    //   target: 'http://localhost:3000',
     // },
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+      },
+      '/newPrompt': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+      },
+      '/dist/imgs/': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+      },
+    },
     disableHostCheck: true,
   },
   plugins: [new webpack.HotModuleReplacementPlugin()],

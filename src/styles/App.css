@@ -1,17 +1,25 @@
 .App {
-  margin: 1rem;
+  /* margin: ; */
   font-family: Arial, Helvetica, sans-serif;
   display: grid;
   justify-content: center;
   background: antiquewhite;
-  height: 400px;
+  height: auto;
+  padding: 10px 10px;
 }
 
 button {
   background-color: lightblue;
 }
 
-
+#newQButton {
+  background-color: lightgray;
+  color: dimgray;
+  width: 100px;
+  height: 70px;
+  margin: 0 20px;
+  font-size: 1rem;
+}
 
 .letterButton {
   margin-top: 2%;
@@ -23,34 +31,34 @@ button {
 }
 
 .letterButton:disabled {
-
   background-color: gray;
-
 }
 
 .letterWrapper {
-  /* width: 50%; */
   margin-left: 10%;
   margin-right: 10%
-
 }
 
 #answerViewer {
   text-align: center;
 }
 
-body {
+/* body {
   background-color: black;
-}
+} */
 
 h1 {
   text-align: center;
 }
 
 .clue {
+  display: grid;
+  grid-template: auto / 1fr auto;
   text-align: center;
+  align-items: center;
   background-color: skyblue;
   padding: 15px;
+  height: auto;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
 }
@@ -60,20 +68,21 @@ h1 {
   text-align: center;
   background-color: burlywood;
   border: 5px solid #dac292;
-  
-  
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
 }
 
 .letterButtons {
   display: table;
   text-align: center;
-
 }
 
 .letterButton:hover {
-  box-shadow: 2px 2px darkgray;
+  box-shadow: 5px 5px 5px darkgray;
 }
 
-
-
-
+img {
+  height: 150px;
+  width: 150px;
+  object-fit: scale-down;
+}
