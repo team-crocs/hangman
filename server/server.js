@@ -87,9 +87,45 @@ server.listen(PORT, () => {
   console.log('** FOR DEPLOYMENT, SWITCH TO REGULAR NODE **');
 });
 
+const gameRooms = []
+
 io.on('connection', (socket) => {
+  socket.on('addRoom', (roomNumber) => {
+    gameRooms.push(roomNumber)
+    socket.emit('loadRooms', gameRooms)
+  })
+
+  socket.emit('loadRooms', gameRooms)
+  console.log("SOCKET ID", socket.id)
+  socket.on('joinRoom', (roomid) => {
+    console.log("ROOMID", roomid)
+    socket.join(roomid);
+    socket.emit('testsocket',roomid);
+  })
   socket.on('clickedLetter', (letter) => {
     console.log('recived', letter);
     io.sockets.emit('clickedLetter', letter);
   });
+
+//   io.of('/').in(room).emit('newUser', 'New Player has joined the ' + room)
+
+  
 });
+
+// const manager = io.of("/game").on('connection', function (socket) {
+//   socket.on('addRoom', (roomNumber) => {
+//     gameRooms.push(roomNumber)
+//     socket.emit('loadRooms', gameRooms)
+//   })
+
+//   socket.on("joinRoom", function(roomid){
+//       socket.join(roomid);
+//       manager.to(roomid).emit('testsocket',roomid);
+//   })
+
+//   socket.on('clickedLetter', (letter) => {
+//     console.log('recived', letter);
+//     manager.to(roomid).emit('clickedLetter', letter);
+//   });
+
+// })

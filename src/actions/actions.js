@@ -31,6 +31,11 @@ export const incrementFailedGuesses = () => ({
   payload: null,
 });
 
+export const updateRoomsToDisplay = (rooms) => ({
+  type: types.LOAD_ROOMS,
+  payload: rooms,
+});
+
 export const checkWin = () => ({
   type: types.CHECK_WIN,
   payload: null,
