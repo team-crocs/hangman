@@ -7,11 +7,12 @@ import AnswerViewer from '../components/answerViewer';
 const LetterWrapper = ({
   answer, disp, letters, letterClicked,
 }) => (
-  <div className="letterWrapper">
+  <div className="letter-wrapper">
     <AnswerViewer
       answer={answer}
       disp={disp}
     />
+    <span className="letter-wrapper__key">(USE KEYBOARD or PRESS BUTTON)</span>
     <LetterSelector
       letters={letters}
       disp={disp}

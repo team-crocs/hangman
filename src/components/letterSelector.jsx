@@ -11,7 +11,7 @@ const LetterSelector = ({ letters, letterClicked }) => {
       <button
         type="button"
         key={`${letterArr[i]}_button`}
-        className="letterButton"
+        className="letter__button-item"
         disabled={letterObj[letterArr[i]] ? 'disabled' : null}
         onClick={
           () => {
@@ -30,7 +30,7 @@ const LetterSelector = ({ letters, letterClicked }) => {
   // }
 
   return (
-    <div className="letterButtons">
+    <div className="letter__buttons">
       {letterButtonArr}
     </div>
   );

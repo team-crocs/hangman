@@ -21,8 +21,6 @@ class DefaultContainer extends React.Component {
         >
           Login with Github
         </a>
-
-        <h1>Hangman X2</h1>
         <GameRoom />
       </>
     );

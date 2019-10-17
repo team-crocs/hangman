@@ -1,5 +1,7 @@
 import React from 'react';
 // import GameRoom from './containers/GameRoom';
+import './styles/App.css';
+import './styles/AppLg.css';
 import DefaultContainer from './containers/DefaultContainer';
 import { Route, Link } from 'react-router-dom'
 import Splash from './Splash.jsx'

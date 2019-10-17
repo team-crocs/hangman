@@ -1,88 +1,104 @@
-.App {
-  /* margin: ; */
-  font-family: Arial, Helvetica, sans-serif;
-  display: grid;
-  justify-content: center;
-  background: antiquewhite;
-  height: auto;
-  padding: 10px 10px;
+* {
+  box-sizing: border-box;
+  color: #212121;
+  margin: 0;
+  padding: 0;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  text-rendering: optimizeLegibility;
 }
 
-button {
-  background-color: lightblue;
+button:focus {
+  outline: none;
 }
 
-#newQButton {
-  background-color: lightgray;
-  color: dimgray;
-  width: 100px;
-  height: 70px;
-  margin: 0 20px;
-  font-size: 1rem;
-}
-
-.letterButton {
-  margin-top: 2%;
-  background-color: blueviolet;
-  color: white;
-  height: auto;
-  width: 5%;
-  text-align: center;
-}
-
-.letterButton:disabled {
-  background-color: gray;
-}
-
-.letterWrapper {
-  margin-left: 10%;
-  margin-right: 10%
-}
-
-#answerViewer {
-  text-align: center;
-}
-
-/* body {
-  background-color: black;
-} */
-
-h1 {
-  text-align: center;
-}
-
-.clue {
-  display: grid;
-  grid-template: auto / 1fr auto;
-  text-align: center;
+/*_________________ SPLASH COMPONENT __________________*/
+.splash {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  background-color: skyblue;
-  padding: 15px;
-  height: auto;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
+  padding: 48px 0;
 }
 
-.hangviewer {
-  display: table;
-  text-align: center;
-  background-color: burlywood;
-  border: 5px solid #dac292;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
+.splash__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 12px; 
 }
 
-.letterButtons {
-  display: table;
-  text-align: center;
+.splash__title {
+  color: #212121;
+  font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;
+  font-size: 56px;
+  letter-spacing: .05em;
+  text-shadow:
+    4px 4px 0px #d5d5d5, 
+    7px 7px 0px rgba(0, 0, 0, 0.2);
 }
 
-.letterButton:hover {
-  box-shadow: 5px 5px 5px darkgray;
+.splash__version {
+  color: #2c2c2c;
+  font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;
+  font-size: 28px;
+  letter-spacing: .05em;
+  text-shadow:
+    4px 4px 0px #d5d5d5, 
+    7px 7px 0px rgba(0, 0, 0, 0.2);
 }
 
-img {
-  height: 150px;
-  width: 150px;
-  object-fit: scale-down;
+.splash__add-room {
+  color: white;
+  background-color: #3d00e0;
+  border: 1px solid #212121;
+  font-size: 14px;
+  /* height: 100px; */
+  width: 400px;
+  padding: 16px;
+  cursor: pointer;
 }
+  .splash__add-room:active {
+    outline: #90ee02 solid 2px;
+    opacity: .75;
+  }
+
+/*_________________ ROOM CONTAINER __________________*/
+.room-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.room__list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #212121;
+  height: 400px;
+  width: 400px;
+  overflow: auto;
+}
+
+.room__header {
+  color: #424242;
+  padding: 12px 0;
+}
+
+.room {
+  background-color: white;
+  border: none;
+  border-bottom: 1px solid #212121;
+  width: 100%;
+  padding: 16px;
+  cursor: pointer;
+}
+  .room:hover {
+    background-color: #3d00e0;
+    color: white;
+  }
+  .room:active, .room:focus {
+    background-color: #0000C3;
+    color: white;
+    outline: #90ee02 solid 2px;
+    z-index: 50;
+  }

@@ -3,7 +3,6 @@
 import React, { Component } from 'react';
 import { hot } from 'react-hot-loader';
 import io from 'socket.io-client';
-import '../styles/App.css';
 import { connect } from 'react-redux';
 import LetterWrapper from './letterWrapper';
 import Clue from '../components/clue';
@@ -143,18 +142,22 @@ class GameRoom extends Component {
     // return all the things and stuff to render
     return (
       <div className="App">
-        <Clue clue={dbQuestion} newQuestion={newQuestion} />
-        <HangViewer
-          hang={hangingPrompts}
-          numFailedGuesses={numberOfFailedGuesses}
-        />
+        <header className="splash__header">
+          <h1 className="splash__title">HANGMAN</h1>
+          <span className="splash__version">x2</span>
+        </header>
+        <HangingDude numberOfFailedGuesses={numberOfFailedGuesses} />
         <LetterWrapper
           letters={letters}
           letterClicked={this.letterClicked}
           answer={dbAnswer}
           disp={displayAnswer}
         />
-        <HangingDude numberOfFailedGuesses={numberOfFailedGuesses} />
+        <Clue clue={dbQuestion} newQuestion={newQuestion} />
+        <HangViewer
+          hang={hangingPrompts}
+          numFailedGuesses={numberOfFailedGuesses}
+        />
       </div>
     );
   }
