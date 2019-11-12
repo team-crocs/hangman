@@ -14,17 +14,17 @@ class DefaultContainer extends React.Component {
 
   render() {
     return (
-      <>
-        {/* apparently the above is good enough for a fragment */}
-        <a
-          href="https://github.com/login/oauth/authorize?client_id=cecbb15649468c524b83"
-        >
-          Login with Github
-        </a>
-        <GameRoom />
-      </>
+      <GameRoom />
     );
   }
 }
+
+
+// {/* apparently the above is good enough for a fragment */}
+// { /* <a
+//   href="https://github.com/login/oauth/authorize?client_id=cecbb15649468c524b83"
+// >
+//   Login with Github
+// </a> */ }
 
 export default DefaultContainer;
