@@ -1,9 +1,5 @@
+/* eslint-disable camelcase */
 const mongoose = require('mongoose');
-
-mongoose.connect('mongodb+srv://Michael:check@cluster0-liyfw.mongodb.net/hang_man?retryWrites=true&w=majority');
-mongoose.connection.once('open', () => {
-  console.log('Connected to mongo database');
-});
 
 const { Schema } = mongoose;
 

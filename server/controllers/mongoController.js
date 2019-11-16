@@ -1,19 +1,29 @@
+/* eslint-disable camelcase */
 
 const mongoController = {};
-const Q_and_A = require('../models/mongoModel.js');
+const mongoConnections = require('../models/mongoConnection');
+
+// const { qAndAModel } = mongoConnections();
 
 // get one random document from the q_and_as collection
-mongoController.getNewQandA = (req, res, next) => {
-  Q_and_A.countDocuments((err, count) => {
-    if (err) res.status(500).send('random number generating not working');
-
+mongoController.getNewQandA = async (req, res, next) => {
+  const { qAndAModel } = await mongoConnections();
+  qAndAModel.countDocuments((err, count) => {
+    if (err) {
+      console.log('early error in getNewQAndA');
+      res.status(500).send('random number generating not working');
+    }
+    console.log('count', count);
     const randSkip = Math.floor(Math.random() * count);
 
-    Q_and_A.findOne().skip(randSkip).exec((err, prompt) => {
-      if (err) res.status(500).send('unable to get question from database');
-      else {
+    qAndAModel.findOne().skip(randSkip).exec((err2, prompt) => {
+      if (err2) {
+        console.log('late error in getNewQAndA');
+        res.status(500).send('unable to get question from database');
+      } else {
+        console.log('prompt', prompt);
         res.locals.newQuestion = prompt;
-        next();
+        return next();
       }
     });
   });

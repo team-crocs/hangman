@@ -30,7 +30,7 @@ app.get('/api/auth/github/callback',
   userController.getUser,
   cookieController.setUserIDCookie,
   (req, res) => {
-    console.log('**************** end of middleware ****************');
+    // console.log('**************** end of middleware ****************');
     res.send('User has logged in');
   });
 
@@ -40,7 +40,10 @@ app.get('/api/auth/github/callback',
 // branch : git push heroku adam-rajeeb/heroku-deployment:master
 app.use('/dist', express.static(path.resolve(__dirname, '../dist')));
 
-app.get('/newPrompt', mongoFunctions.getNewQandA, (req, res, next) => {
+app.get('/newPrompt', (req, res, next) => {
+  console.log('hellooooooooo');
+  next();
+}, mongoFunctions.getNewQandA, (req, res, next) => {
   res.status(300).send(res.locals.newQuestion);
 });
 
