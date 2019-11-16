@@ -13,18 +13,17 @@ mongoController.getNewQandA = async (req, res, next) => {
       console.log('early error in getNewQAndA');
       res.status(500).send('random number generating not working');
     }
-    console.log('count', count);
+    // console.log('count', count);
     const randSkip = Math.floor(Math.random() * count);
 
     qAndAModel.findOne().skip(randSkip).exec((err2, prompt) => {
       if (err2) {
         console.log('late error in getNewQAndA');
         res.status(500).send('unable to get question from database');
-      } else {
-        console.log('prompt', prompt);
-        res.locals.newQuestion = prompt;
-        return next();
       }
+      // console.log('prompt', prompt);
+      res.locals.newQuestion = prompt;
+      return next();
     });
   });
 };

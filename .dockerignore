@@ -1,0 +1,13 @@
+__tests__/**
+src
+__tests__
+.eslintrc.json
+.gitignore
+node_modules/
+hangman.zip
+jest-setup.js
+jest-teardown.js
+jest.config.js
+LICENSE
+README.md
+webpack.config.js
