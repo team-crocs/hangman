@@ -1,6 +1,5 @@
 __tests__/**
-src
-__tests__
+tests
 .eslintrc.json
 .gitignore
 node_modules/
