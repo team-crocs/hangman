@@ -1,12 +1,12 @@
-__tests__/**
-tests
+*/__tests__*
+*/tests*
 .eslintrc.json
 .gitignore
 node_modules/
 hangman.zip
-jest-setup.js
-jest-teardown.js
-jest.config.js
+jest-setup?
+jest-teardown?
+jest.config?
 LICENSE
 README.md
 webpack.config.js
