@@ -14,7 +14,7 @@ module.exports = async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       poolSize: 5,
-      socketTimeoutMS: 500,
+      socketTimeoutMS: 1000,
     },
   )
     .then(() => console.log('Connected to MongoDB'))

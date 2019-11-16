@@ -144,7 +144,7 @@ class GameRoom extends Component {
       <div className="App">
         <header className="splash__header">
           <h1 className="splash__title">HANGMAN</h1>
-          <span className="splash__version">x2</span>
+          <span className="splash__version">RTC</span>
         </header>
         <HangingDude numberOfFailedGuesses={numberOfFailedGuesses} />
         <LetterWrapper
