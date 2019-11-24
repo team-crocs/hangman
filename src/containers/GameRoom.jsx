@@ -3,12 +3,12 @@ import React, { Component } from 'react';
 import { hot } from 'react-hot-loader';
 import io from 'socket.io-client';
 import { connect } from 'react-redux';
-import LetterWrapper from './letterWrapper';
+
+import LetterWrapper from './LetterWrapper';
 import Clue from '../components/Clue';
 import HangViewer from '../components/HangViewer';
 import HangingDude from '../components/HangingDude';
 import Header from '../components/Header';
-// import * as types from '../constants/actionTypes';
 import * as actions from '../actions/actions';
 
 const mapStateToProps = (state) => ({
