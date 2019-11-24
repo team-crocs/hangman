@@ -42,12 +42,6 @@ export const checkWin = () => ({
 });
 
 // grab a new question from the mongoDB
-export const newQuestion = (question, answer) => ({
-  type: types.NEW_QUESTION,
-  payloadQuestion: question,
-  payloadAnswer: answer,
-});
-
 export const newQuestionNoFetch = (question, answer) => ({
   type: types.NEW_QUESTION,
   payloadQuestion: question,
