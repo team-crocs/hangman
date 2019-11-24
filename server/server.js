@@ -10,15 +10,19 @@ const mongoFunctions = require('./controllers/mongoController');
 
 const PORT = process.env.PORT || 3000;
 
+// connect to socketio server
 io.on('connection', (socket) => {
-  console.log('\n\nSOCKET ID: ', socket.id);
+  // console.log('\n\nSOCKET ID: ', socket.id);
+
+  // when a newQuestion is received, emit it out to the server
   socket.on('newQuestion', (question, answer) => {
-    console.log('server received new question', question, answer);
+    // console.log('server received new question', question, answer);
     io.sockets.emit('newQuestion', question, answer);
   });
 
+  // when a clickedLetter is received, emit it out to the server
   socket.on('clickedLetter', (letter) => {
-    console.log('server recived', letter);
+    // console.log('server recived', letter);
     io.sockets.emit('clickedLetter', letter);
   });
 });
@@ -26,24 +30,22 @@ io.on('connection', (socket) => {
 
 app.use(bodyParser.json());
 
-// For Build
-// For adding a new remote to heroku : heroku git:remote -a hangmanx-cs
-// push the branch adam-rajeeb/heroku-deployment to heroku remote's master
-// branch : git push heroku adam-rajeeb/heroku-deployment:master
+// serve up statics (build, imgs)
 app.use('/dist', express.static(path.resolve(__dirname, '../dist')));
 
+// endpoint to grab a new question and answer
 app.get('/newPrompt', mongoFunctions.getNewQandA, (req, res) => {
-  // console.log('new question at the end of new prompt endpoint', res.locals.newQuestion);
   res.status(300).json(res.locals.newQuestion);
 });
 
+// endpoint for default landing page at '/' endpoint
 app.get('/', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../public/index.html'));
 });
 
 /**
- * @name GLOBAL ROUTE HANDLER
- * @description handles all bad request sent from frontend
+ * @name GLOBAL 404 ROUTE HANDLER
+ * @description handles all bad requests sent from frontend
  */
 app.all('*', (req, res) => {
   res.status(404).send('Page not found');
@@ -63,7 +65,7 @@ app.use((err, req, res, next) => {
     status: 500,
   };
   const newError = { ...defaultError, ...err };
-  console.log('*********** ERROR **********\n', newError.log);
+  // console.log('*********** ERROR **********\n', newError.log);
   res.status(newError.status).send(newError.message);
 });
 

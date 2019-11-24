@@ -13,8 +13,8 @@ mongoController.getNewQandA = async (req, res, next) => {
   // count the number of documents/entries in the mongoDB
   qAndAModel.countDocuments((err, count) => {
     if (err) {
-      // console.log('early error in getNewQAndA');
-      res.status(500).send('random number generating not working');
+      // send to global error handler with the message and a status describing "failed dependency"
+      return next({ message: err.message, status: 424 });
     }
 
     // generate a "random" number and skip that many documents
@@ -22,8 +22,8 @@ mongoController.getNewQandA = async (req, res, next) => {
 
     qAndAModel.findOne().skip(randSkip).exec((err2, prompt) => {
       if (err2) {
-        // console.log('late error in getNewQAndA');
-        res.status(500).send('unable to get question from database');
+        // send error to global error handler with the message and a status describing a timeout
+        return next({ message: err2.message, status: 408 });
       }
       // console.log('prompt', prompt);
       res.locals.newQuestion = prompt;
