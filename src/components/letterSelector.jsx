@@ -31,5 +31,4 @@ const LetterSelector = ({ letters, letterClicked }) => {
   );
 };
 
-
 export default LetterSelector;
