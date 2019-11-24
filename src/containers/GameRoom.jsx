@@ -48,7 +48,7 @@ class GameRoom extends Component {
     this.newQuestion = this.newQuestion.bind(this);
 
     // TODO to AWS
-    this.socket = io.connect('http://localhost:3000');
+    this.socket = io.connect('http://socketman.us-east-1.elasticbeanstalk.com/');
   }
 
   componentDidMount() {
