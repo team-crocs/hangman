@@ -1,5 +1,6 @@
 const mongoConnections = require('../models/mongoConnection');
 
+// script used to seed the mongo database
 const seedDb = async () => {
   const { qAndAModel } = await mongoConnections();
   const arr = [{

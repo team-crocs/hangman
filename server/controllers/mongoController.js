@@ -7,19 +7,23 @@ const mongoConnections = require('../models/mongoConnection');
 
 // get one random document from the q_and_as collection
 mongoController.getNewQandA = async (req, res, next) => {
+  // connect to the database and destructure out the qAndA model
   const { qAndAModel } = await mongoConnections();
+
+  // count the number of documents/entries in the mongoDB
   qAndAModel.countDocuments((err, count) => {
     if (err) {
-      console.log('early error in getNewQAndA');
-      res.status(500).send('random number generating not working');
+      // send to global error handler with the message and a status describing "failed dependency"
+      return next({ message: err.message, status: 424 });
     }
-    // console.log('count', count);
+
+    // generate a "random" number and skip that many documents
     const randSkip = Math.floor(Math.random() * count);
 
     qAndAModel.findOne().skip(randSkip).exec((err2, prompt) => {
       if (err2) {
-        console.log('late error in getNewQAndA');
-        res.status(500).send('unable to get question from database');
+        // send error to global error handler with the message and a status describing a timeout
+        return next({ message: err2.message, status: 408 });
       }
       // console.log('prompt', prompt);
       res.locals.newQuestion = prompt;

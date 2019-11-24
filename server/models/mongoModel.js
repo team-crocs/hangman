@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
+// create qAndA schema that has a question and an answer
 const promptSchema = new Schema({
   question: { type: String, required: true },
   answer: { type: String, required: true },

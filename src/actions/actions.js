@@ -42,14 +42,8 @@ export const checkWin = () => ({
 });
 
 // grab a new question from the mongoDB
-export const newQuestion = (question, answer) => ({
+export const newQuestionNoFetch = (question, answer) => ({
   type: types.NEW_QUESTION,
   payloadQuestion: question,
   payloadAnswer: answer,
 });
-
-// unused
-// export const resetGame = () => ({
-//   type: types.RESET_GAME,
-//   payload: null,
-// });

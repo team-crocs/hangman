@@ -1,40 +1,51 @@
-// https://socket.io/docs/
 const path = require('path');
 const express = require('express');
-const mongoose = require('mongoose');
-
 
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
 const mongoFunctions = require('./controllers/mongoController');
 
 const PORT = process.env.PORT || 3000;
 
-app.use(bodyParser.json());
-app.use(cookieParser());
+// connect to socketio server
+io.on('connection', (socket) => {
+  // console.log('\n\nSOCKET ID: ', socket.id);
 
-// For Build
-// For adding a new remote to heroku : heroku git:remote -a hangmanx-cs
-// push the branch adam-rajeeb/heroku-deployment to heroku remote's master
-// branch : git push heroku adam-rajeeb/heroku-deployment:master
+  // when a newQuestion is received, emit it out to the server
+  socket.on('newQuestion', (question, answer) => {
+    // console.log('server received new question', question, answer);
+    io.sockets.emit('newQuestion', question, answer);
+  });
+
+  // when a clickedLetter is received, emit it out to the server
+  socket.on('clickedLetter', (letter) => {
+    // console.log('server recived', letter);
+    io.sockets.emit('clickedLetter', letter);
+  });
+});
+
+
+app.use(bodyParser.json());
+
+// serve up statics (build, imgs)
 app.use('/dist', express.static(path.resolve(__dirname, '../dist')));
 
+// endpoint to grab a new question and answer
 app.get('/newPrompt', mongoFunctions.getNewQandA, (req, res) => {
-  // console.log('new question at the end of new prompt endpoint', res.locals.newQuestion);
   res.status(300).json(res.locals.newQuestion);
 });
 
-app.get('/', (req, res, next) => {
+// endpoint for default landing page at '/' endpoint
+app.get('/', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../public/index.html'));
 });
 
 /**
- * @name GLOBAL ROUTE HANDLER
- * @description handles all bad request sent from frontend
+ * @name GLOBAL 404 ROUTE HANDLER
+ * @description handles all bad requests sent from frontend
  */
 app.all('*', (req, res) => {
   res.status(404).send('Page not found');
@@ -54,23 +65,8 @@ app.use((err, req, res, next) => {
     status: 500,
   };
   const newError = { ...defaultError, ...err };
-  console.log('*********** ERROR **********\n', newError.log);
+  // console.log('*********** ERROR **********\n', newError.log);
   res.status(newError.status).send(newError.message);
 });
 
-server.listen(PORT, () => {
-  // for deployment run on regualar node in NPM START
-  console.log('\n** RUNNING ON NODEMON **');
-  console.log('Server listening on PORT:', PORT);
-  console.log('** FOR DEPLOYMENT, SWITCH TO REGULAR NODE **');
-});
-
-const gameRooms = [];
-
-io.on('connection', (socket) => {
-  console.log('SOCKET ID', socket.id);
-  socket.on('clickedLetter', (letter) => {
-    console.log('recived', letter);
-    io.sockets.emit('clickedLetter', letter);
-  });
-});
+server.listen(PORT, () => console.log('Server listening on PORT:', PORT));
