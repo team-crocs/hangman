@@ -3,16 +3,6 @@
 
 import * as types from '../constants/actionTypes';
 
-// old
-// const gameStore = [
-//   [['It is the thing you might cut yourself on if you reach out to touch the world like a ball'],
-//     ['m', 'o', 'u', 'n', 't', 'a', 'i', 'n']],
-//   [["It's breezy."],
-//     ['f', 'l', 'i', 'g', 'h', 't', 'y']],
-//   [['It hangs in the sky, before it falls, but you do not want to avoid it.'],
-//     ['a', 'p', 'p', 'l', 'e']],
-// ];
-
 // set up initial state
 const initialState = {
   letters: {}, // tracks which letters have been clicked
@@ -37,7 +27,7 @@ for (let i = 97; i < 123; i += 1) {
 initialState.dbAnswer.forEach(() => initialState.displayAnswer.push('_'));
 // console.log('init state', initialState);
 
-/* **********
+/**
 *
 * REDUCERS
 *
@@ -50,15 +40,10 @@ const hangmanReducer = (state = initialState, action) => {
   let displayAnswer;
   let numberOfFailedGuesses;
   const maxNumberOfGuesses = state.hangingPrompts.length - 1;
-  // console.log('state', state);
+  // console.log('store\'s state is \n', state);
 
   switch (action.type) {
-    // case types.SELECT_QUESTION:
-    //   dbQuestion =
-    // CAPITALIZE ALL OF THE LETTERS IN THE ANSWER ARRAY
-
     case types.NEW_QUESTION:
-      // async in redux is hard......................
       dbQuestion = action.payloadQuestion;
       dbAnswer = action.payloadAnswer.split('');
       // console.log('answer and db answer in reducer', action.payloadAnswer, dbAnswer);
@@ -72,8 +57,6 @@ const hangmanReducer = (state = initialState, action) => {
         // numberOfFailedGuesses: 0,
       };
 
-
-    // eslint-disable-next-line no-fallthrough
     case types.UPDATE_DISPLAY_ANSWER:
       // make shallow copy of display answer array
       displayAnswer = [...state.displayAnswer];
@@ -115,8 +98,6 @@ const hangmanReducer = (state = initialState, action) => {
       }
       return { ...state };
 
-    // case types.RESET_GAME:
-    //   break;
     default:
       // console.log('default state', state, action.type);
       // return the initial state if action.type does not match any of these

@@ -1,21 +1,30 @@
-// https://socket.io/docs/
 const path = require('path');
 const express = require('express');
-const mongoose = require('mongoose');
-
 
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
 const mongoFunctions = require('./controllers/mongoController');
 
 const PORT = process.env.PORT || 3000;
 
+io.on('connection', (socket) => {
+  console.log('\n\nSOCKET ID: ', socket.id);
+  socket.on('newQuestion', (question, answer) => {
+    console.log('server received new question', question, answer);
+    io.sockets.emit('newQuestion', question, answer);
+  });
+
+  socket.on('clickedLetter', (letter) => {
+    console.log('server recived', letter);
+    io.sockets.emit('clickedLetter', letter);
+  });
+});
+
+
 app.use(bodyParser.json());
-app.use(cookieParser());
 
 // For Build
 // For adding a new remote to heroku : heroku git:remote -a hangmanx-cs
@@ -28,7 +37,7 @@ app.get('/newPrompt', mongoFunctions.getNewQandA, (req, res) => {
   res.status(300).json(res.locals.newQuestion);
 });
 
-app.get('/', (req, res, next) => {
+app.get('/', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../public/index.html'));
 });
 
@@ -58,19 +67,4 @@ app.use((err, req, res, next) => {
   res.status(newError.status).send(newError.message);
 });
 
-server.listen(PORT, () => {
-  // for deployment run on regualar node in NPM START
-  console.log('\n** RUNNING ON NODEMON **');
-  console.log('Server listening on PORT:', PORT);
-  console.log('** FOR DEPLOYMENT, SWITCH TO REGULAR NODE **');
-});
-
-const gameRooms = [];
-
-io.on('connection', (socket) => {
-  console.log('SOCKET ID', socket.id);
-  socket.on('clickedLetter', (letter) => {
-    console.log('recived', letter);
-    io.sockets.emit('clickedLetter', letter);
-  });
-});
+server.listen(PORT, () => console.log('Server listening on PORT:', PORT));

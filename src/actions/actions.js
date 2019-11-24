@@ -48,8 +48,8 @@ export const newQuestion = (question, answer) => ({
   payloadAnswer: answer,
 });
 
-// unused
-// export const resetGame = () => ({
-//   type: types.RESET_GAME,
-//   payload: null,
-// });
+export const newQuestionNoFetch = (question, answer) => ({
+  type: types.NEW_QUESTION,
+  payloadQuestion: question,
+  payloadAnswer: answer,
+});

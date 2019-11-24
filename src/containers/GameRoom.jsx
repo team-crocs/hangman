@@ -12,8 +12,6 @@ import HangingDude from '../components/HangingDude';
 // import * as types from '../constants/actionTypes';
 import * as actions from '../actions/actions';
 
-// https://codeburst.io/isomorphic-web-app-react-js-express-socket-io-e2f03a469cd3
-
 const mapStateToProps = (state) => ({
   letters: state.hangman.letters,
   dbAnswer: state.hangman.dbAnswer,
@@ -22,6 +20,22 @@ const mapStateToProps = (state) => ({
   hangingPrompts: state.hangman.hangingPrompts,
   numberOfFailedGuesses: state.hangman.numberOfFailedGuesses,
 });
+
+async function fetchNewPrompt() {
+  const qAndA = await fetch('/newPrompt', {
+    headers: {
+      'Cache-Control': 'no-cache',
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((res) => res.json())
+    .then((json) => json)
+    .catch((err) => console.log('FETCH ERRORRRRRR', err));
+
+  console.log('fetched question and answer is', qAndA);
+  return qAndA;
+}
+
 
 const mapDispatchToProps = (dispatch) => ({
   updateLetter(letter) {
@@ -36,6 +50,9 @@ const mapDispatchToProps = (dispatch) => ({
   checkWin() {
     dispatch(actions.checkWin());
   },
+  // newQuestion() {
+  //   fetch('')
+  // }
   newQuestionNoFetch(question, answer) {
     console.log('in map dispatch no fetch', question, answer);
     dispatch(actions.newQuestionNoFetch(question, answer));
@@ -45,9 +62,10 @@ const mapDispatchToProps = (dispatch) => ({
 class GameRoom extends Component {
   constructor(props) {
     super(props);
-    // this.gameEnded = this.gameEnded.bind(this);
     this.letterClicked = this.letterClicked.bind(this);
-    this.socket = io.connect('https://hangmanx-cs.herokuapp.com');
+
+    // TODO to AWS
+    this.socket = io.connect('http://localhost:3000');
   }
 
   componentDidMount() {
@@ -56,32 +74,28 @@ class GameRoom extends Component {
       updateLetter, updateDisplayAnswer, incrementFailedGuesses, newQuestionNoFetch,
     } = this.props;
 
-    console.log('in comp did mount');
-    this.socket.on('connect', (sock) => {
-      console.log('connected to socket');
-
-      // create socket listener for clicked letter
-      this.socket.on('clickedLetter', (letter) => {
-        console.log('clickedletteris ', letter);
-        // call dispatch to update letters in store/state
-        updateLetter(letter);
-        // console.log('letter and dbAnswer in GameRoom comp', letter, dbAnswer);
-        // check if answer in state has the letter
-        // eslint-disable-next-line react/destructuring-assignment
-        if (this.props.dbAnswer.includes(letter)) {
+    // create socket listener for clicked letter
+    this.socket.on('clickedLetter', (letter) => {
+      console.log('clickedletteris ', letter);
+      // call dispatch to update letters in store/state
+      updateLetter(letter);
+      // console.log('letter and dbAnswer in GameRoom comp', letter, dbAnswer);
+      // check if answer in state has the letter
+      // eslint-disable-next-line react/destructuring-assignment
+      if (this.props.dbAnswer.includes(letter)) {
         // call dispatch to update the display answer
-          updateDisplayAnswer(letter);
-        } else {
+        updateDisplayAnswer(letter);
+      } else {
         // this.setState({ numFailedGuesses: this.state.numFailedGuesses + 1 });
-          incrementFailedGuesses();
-        }
-      });
-      this.socket.on('newQ', (question, answer) => {
-        console.log('new question trigger');
-        console.log('new question SOCKET triggered', question, answer);
-        newQuestionNoFetch(question, answer);
-      });
+        incrementFailedGuesses();
+      }
     });
+
+    this.socket.on('newQuestion', (question, answer) => {
+      console.log('new question SOCKET triggered', question, answer);
+      newQuestionNoFetch(question, answer);
+    });
+
     // get a new question (dispatch to props)
     // todo set socket.on for new question
 
@@ -106,41 +120,20 @@ class GameRoom extends Component {
 
   // change state when letter is selected
   letterClicked(letter) {
-    // if (String.toCharCode())
     // console.log('letter clicked was:', letter, letter.charCodeAt(0));
-    this.socket.emit('newQ', 'random Q', 'random A');
 
     // const { newQuestion } = this.props;
     // only allow lower case letters, or ENTER for newQuestion
     if (letter === 'enter') {
       // console.log('new question clicked!');
-      fetch('/newPrompt', {
-        headers: {
-          'Cache-Control': 'no-cache',
-          'Content-Type': 'application/json',
-        },
-      })
-        .then((res) => res.json())
-        .then(({ question, answer }) => {
-          console.log('--in fetch: question and answer', question, answer);
-
-          // this.props.newQuestionNoFetch(question, answer);
-          // console.log('props are', this.props);
-          // console.log('socket obj is', this.socket);
-          // console.log('this is', this);
-          // todo emit to socketio with new question and answer?
-          this.socket.emit('newQ', question, answer);
-        })
-        .catch((err) => console.log('FETCH ERRORRRRRR', err));
+      fetchNewPrompt()
+        .then(({ question, answer }) => this.socket.emit('newQuestion', question, answer));
     } else if (letter.charCodeAt(0) >= 97 && letter.charCodeAt(0) <= 122) {
-      console.log('letter clicked socket obj is', this.socket);
       this.socket.emit('clickedLetter', letter);
     }
   }
 
   render() {
-    // console.log('props from redux', this.props.letters);
-
     // destructure props
     const {
       dbQuestion, dbAnswer, hangingPrompts, numberOfFailedGuesses, letters, displayAnswer,
@@ -161,7 +154,8 @@ class GameRoom extends Component {
           answer={dbAnswer}
           disp={displayAnswer}
         />
-        {/* There's going to be an issue with newQUestion being passed down like this... */}
+        {// ! There's going to be an issue with newQuestion being passed down like this...
+        }
         <Clue clue={dbQuestion} newQuestion={newQuestionNoFetch} />
         <HangViewer
           hang={hangingPrompts}
