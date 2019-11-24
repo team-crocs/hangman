@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-filename-extension */
 import React, { Component } from 'react';
 import { hot } from 'react-hot-loader';
@@ -36,7 +35,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(actions.checkWin());
   },
   newQuestionNoFetch(question, answer) {
-    console.log('in map dispatch no fetch', question, answer);
+    // dispatch a new question to the reducers, triggered by an emitter, NOT a fetch
     dispatch(actions.newQuestionNoFetch(question, answer));
   },
 });
@@ -44,10 +43,12 @@ const mapDispatchToProps = (dispatch) => ({
 class GameRoom extends Component {
   constructor(props) {
     super(props);
+
+    // two methods that handle user inputs
     this.letterClicked = this.letterClicked.bind(this);
     this.newQuestion = this.newQuestion.bind(this);
 
-    // TODO to AWS
+    // AWS link for server connection
     this.socket = io.connect('http://socketman.us-east-1.elasticbeanstalk.com/');
   }
 
@@ -59,39 +60,39 @@ class GameRoom extends Component {
 
     // create socket listener for clicked letter
     this.socket.on('clickedLetter', (letter) => {
-      console.log('clickedletteris ', letter);
-      // call dispatch to update letters in store/state
+      // console.log('clickedletteris ', letter);
+
+      // dispatch to update letters in store
       updateLetter(letter);
-      // console.log('letter and dbAnswer in GameRoom comp', letter, dbAnswer);
-      // check if answer in state has the letter
+
+      // check if answer in state has the letter, this cannot use destructuring because
+      // the closure will not allow for new questions/answers!!!
       // eslint-disable-next-line react/destructuring-assignment
-      if (this.props.dbAnswer.includes(letter)) {
-        // call dispatch to update the display answer
-        updateDisplayAnswer(letter);
-      } else {
-        // this.setState({ numFailedGuesses: this.state.numFailedGuesses + 1 });
-        incrementFailedGuesses();
-      }
+      if (this.props.dbAnswer.includes(letter)) updateDisplayAnswer(letter);
+      else incrementFailedGuesses();
     });
 
+    // if a newQuestion is emitted, dispatch the new question and answer to update the store
+    // this is to sync up all user's redux stores!
     this.socket.on('newQuestion', (question, answer) => {
-      console.log('new question SOCKET triggered', question, answer);
+      // console.log('new question SOCKET triggered', question, answer);
       newQuestionNoFetch(question, answer);
     });
 
+    // trigger newQuestion upon the first compDidMount
     this.newQuestion();
 
-    // single line of code to handle keypresses (sends to letterClicked method)
+    // handle keypresses (sends to letterClicked method)
     document.addEventListener('keypress', (e) => this.letterClicked(e.key.toLowerCase()));
   }
 
+  // everytime the dom updates, check if the user has won the game
   componentDidUpdate() {
     const { checkWin } = this.props;
     checkWin();
   }
 
-  // this probably isn't doing it's job because the event listener function
-  // in Comp Did Mount is anonymous https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener
+  // if component will unmount, remove the event listener (this is mainly for the hotmod reload)
   componentWillUnmount() {
     document.removeEventListener('keypress', (e) => this.letterClicked(e.key.toLowerCase()));
   }
@@ -113,14 +114,14 @@ class GameRoom extends Component {
   async newQuestion() {
     const qAndA = await fetch('/newPrompt', {
       headers: {
-        'Cache-Control': 'no-cache',
+        'Cache-Control': 'no-cache', // no caching or else this will grab the cached (old) question
         'Content-Type': 'application/json',
       },
     })
       .then((res) => res.json())
       .then((json) => json)
+      // eslint-disable-next-line no-console
       .catch((err) => console.log('FETCH ERRORRRRRR', err));
-
 
     const { question, answer } = qAndA;
     this.socket.emit('newQuestion', question, answer);

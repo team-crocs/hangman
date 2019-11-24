@@ -19,6 +19,6 @@ module.exports = async () => {
   )
     .then(() => console.log('Connected to MongoDB'))
     .catch((err) => console.log('ERROR ON FIRST CONNECTION ATTEMPT TO MONGO:', err));
-  // return an object with all the models on it
+  // return an object with all the models on it, in this case only the qAndAModel
   return { qAndAModel };
 };
