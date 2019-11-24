@@ -21,21 +21,6 @@ const mapStateToProps = (state) => ({
   numberOfFailedGuesses: state.hangman.numberOfFailedGuesses,
 });
 
-async function fetchNewPrompt() {
-  const qAndA = await fetch('/newPrompt', {
-    headers: {
-      'Cache-Control': 'no-cache',
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((res) => res.json())
-    .then((json) => json)
-    .catch((err) => console.log('FETCH ERRORRRRRR', err));
-
-  console.log('fetched question and answer is', qAndA);
-  return qAndA;
-}
-
 
 const mapDispatchToProps = (dispatch) => ({
   updateLetter(letter) {
@@ -50,9 +35,6 @@ const mapDispatchToProps = (dispatch) => ({
   checkWin() {
     dispatch(actions.checkWin());
   },
-  // newQuestion() {
-  //   fetch('')
-  // }
   newQuestionNoFetch(question, answer) {
     console.log('in map dispatch no fetch', question, answer);
     dispatch(actions.newQuestionNoFetch(question, answer));
@@ -63,6 +45,7 @@ class GameRoom extends Component {
   constructor(props) {
     super(props);
     this.letterClicked = this.letterClicked.bind(this);
+    this.newQuestion = this.newQuestion.bind(this);
 
     // TODO to AWS
     this.socket = io.connect('http://localhost:3000');
@@ -96,12 +79,7 @@ class GameRoom extends Component {
       newQuestionNoFetch(question, answer);
     });
 
-    // get a new question (dispatch to props)
-    // todo set socket.on for new question
-
-    // todo change this to emit for a new question?
-    // newQuestion();
-
+    this.newQuestion();
 
     // single line of code to handle keypresses (sends to letterClicked method)
     document.addEventListener('keypress', (e) => this.letterClicked(e.key.toLowerCase()));
@@ -126,18 +104,32 @@ class GameRoom extends Component {
     // only allow lower case letters, or ENTER for newQuestion
     if (letter === 'enter') {
       // console.log('new question clicked!');
-      fetchNewPrompt()
-        .then(({ question, answer }) => this.socket.emit('newQuestion', question, answer));
+      this.newQuestion();
     } else if (letter.charCodeAt(0) >= 97 && letter.charCodeAt(0) <= 122) {
       this.socket.emit('clickedLetter', letter);
     }
+  }
+
+  async newQuestion() {
+    const qAndA = await fetch('/newPrompt', {
+      headers: {
+        'Cache-Control': 'no-cache',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then((json) => json)
+      .catch((err) => console.log('FETCH ERRORRRRRR', err));
+
+
+    const { question, answer } = qAndA;
+    this.socket.emit('newQuestion', question, answer);
   }
 
   render() {
     // destructure props
     const {
       dbQuestion, dbAnswer, hangingPrompts, numberOfFailedGuesses, letters, displayAnswer,
-      newQuestionNoFetch,
     } = this.props;
 
     // return all the things and stuff to render
@@ -154,9 +146,7 @@ class GameRoom extends Component {
           answer={dbAnswer}
           disp={displayAnswer}
         />
-        {// ! There's going to be an issue with newQuestion being passed down like this...
-        }
-        <Clue clue={dbQuestion} newQuestion={newQuestionNoFetch} />
+        <Clue clue={dbQuestion} newQuestion={this.newQuestion} />
         <HangViewer
           hang={hangingPrompts}
           numFailedGuesses={numberOfFailedGuesses}
