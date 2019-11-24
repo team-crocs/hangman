@@ -12,7 +12,6 @@ import HangingDude from '../components/HangingDude';
 import * as actions from '../actions/actions';
 
 const mapStateToProps = (state) => ({
-  letters: state.hangman.letters,
   dbAnswer: state.hangman.dbAnswer,
   dbQuestion: state.hangman.dbQuestion,
   displayAnswer: state.hangman.displayAnswer,
@@ -129,7 +128,7 @@ class GameRoom extends Component {
   render() {
     // destructure props
     const {
-      dbQuestion, dbAnswer, hangingPrompts, numberOfFailedGuesses, letters, displayAnswer,
+      dbQuestion, hangingPrompts, numberOfFailedGuesses,
     } = this.props;
 
     // return all the things and stuff to render
@@ -140,11 +139,7 @@ class GameRoom extends Component {
           <span className="splash__version">x2</span>
         </header>
         <HangingDude />
-        <LetterWrapper
-          letterClicked={this.letterClicked}
-          answer={dbAnswer}
-          displayAnswer={displayAnswer}
-        />
+        <LetterWrapper letterClicked={this.letterClicked} />
         <Clue clue={dbQuestion} newQuestion={this.newQuestion} />
         <HangViewer
           hang={hangingPrompts}

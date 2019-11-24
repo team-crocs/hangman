@@ -49,13 +49,14 @@ const hangmanReducer = (state = initialState, action) => {
       dbAnswer = action.payloadAnswer.split('');
       // console.log('answer and db answer in reducer', action.payloadAnswer, dbAnswer);
       displayAnswer = dbAnswer.map(() => '_');
+      // reset the entire game (all letters and failed guesses reset)
       return {
         ...initialState,
         dbQuestion,
         dbAnswer,
         displayAnswer,
-        // letters: initialState.letters,
-        // numberOfFailedGuesses: 0,
+        letters: initialState.letters,
+        numberOfFailedGuesses: 0,
       };
 
     case types.UPDATE_DISPLAY_ANSWER:
@@ -89,9 +90,9 @@ const hangmanReducer = (state = initialState, action) => {
 
     case types.CHECK_WIN:
       numberOfFailedGuesses = state.numberOfFailedGuesses;
-      // console.log('num guesses', numberOfFailedGuesses);
-      // console.log('max', maxNumberOfGuesses);
-      if (numberOfFailedGuesses === maxNumberOfGuesses) {
+
+      // >= becuase of button mashing...
+      if (numberOfFailedGuesses >= maxNumberOfGuesses) {
         alert('GAME OVER');
       }
       if (state.displayAnswer.join('') === state.dbAnswer.join('')) {
