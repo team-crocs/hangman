@@ -1,21 +1,20 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import LetterSelector from '../components/letterSelector';
 import AnswerViewer from '../components/answerViewer';
 
-const LetterWrapper = ({
-  answer, disp, letters, letterClicked,
-}) => (
+const mapStateToProps = (state) => ({
+  letters: state.hangman.letters,
+});
+
+const LetterWrapper = ({ letters, letterClicked }) => (
   <div className="letterWrapper">
-    <AnswerViewer
-      answer={answer}
-      disp={disp}
-    />
+    <AnswerViewer />
     <LetterSelector
       letters={letters}
-      disp={disp}
       letterClicked={letterClicked}
     />
   </div>
 );
 
-export default LetterWrapper;
+export default connect(mapStateToProps)(LetterWrapper);

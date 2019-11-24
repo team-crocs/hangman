@@ -17,7 +17,6 @@ const mapStateToProps = (state) => ({
   dbQuestion: state.hangman.dbQuestion,
   displayAnswer: state.hangman.displayAnswer,
   hangingPrompts: state.hangman.hangingPrompts,
-  numberOfFailedGuesses: state.hangman.numberOfFailedGuesses,
 });
 
 
@@ -140,12 +139,11 @@ class GameRoom extends Component {
           <h1 className="splash__title">SocketMan</h1>
           <span className="splash__version">x2</span>
         </header>
-        <HangingDude numberOfFailedGuesses={numberOfFailedGuesses} />
+        <HangingDude />
         <LetterWrapper
-          letters={letters}
           letterClicked={this.letterClicked}
           answer={dbAnswer}
-          disp={displayAnswer}
+          displayAnswer={displayAnswer}
         />
         <Clue clue={dbQuestion} newQuestion={this.newQuestion} />
         <HangViewer

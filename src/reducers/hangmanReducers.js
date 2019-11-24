@@ -6,6 +6,7 @@ import * as types from '../constants/actionTypes';
 // set up initial state
 const initialState = {
   letters: {}, // tracks which letters have been clicked
+  // a default question and answer (if connection is very slow)
   dbQuestion: 'It is the thing you might cut yourself on if you reach out to touch the world like a ball',
   dbAnswer: ['m', 'o', 'u', 'n', 't', 'a', 'i', 'n'],
   displayAnswer: [], // old disp
