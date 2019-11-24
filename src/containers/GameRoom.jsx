@@ -3,7 +3,6 @@
 import React, { Component } from 'react';
 import { hot } from 'react-hot-loader';
 import io from 'socket.io-client';
-import '../styles/App.css';
 import { connect } from 'react-redux';
 import LetterWrapper from './letterWrapper';
 import Clue from '../components/clue';
@@ -37,19 +36,9 @@ const mapDispatchToProps = (dispatch) => ({
   checkWin() {
     dispatch(actions.checkWin());
   },
-  newQuestion() {
-    // console.log('new question clicked!');
-    fetch('/newPrompt', {
-      headers: {
-        'Cache-Control': 'no-cache',
-      },
-    })
-      .then((res) => res.json())
-      .then((obj) => {
-        const { question, answer } = obj;
-        // console.log('question and answer', question, answer);
-        dispatch(actions.newQuestion(question, answer));
-      });
+  newQuestionNoFetch(question, answer) {
+    console.log('in map dispatch no fetch', question, answer);
+    dispatch(actions.newQuestionNoFetch(question, answer));
   },
 });
 
@@ -64,30 +53,41 @@ class GameRoom extends Component {
   componentDidMount() {
     // destructure props
     const {
-      updateLetter, updateDisplayAnswer, incrementFailedGuesses, newQuestion,
+      updateLetter, updateDisplayAnswer, incrementFailedGuesses, newQuestionNoFetch,
     } = this.props;
 
-    // this.socket.on('connect', () => {
-    //   console.log('connected to socket');
-    // });
-    // get a new question (dispatch to props)
-    newQuestion();
+    console.log('in comp did mount');
+    this.socket.on('connect', (sock) => {
+      console.log('connected to socket');
 
-    // create socket listener for clicked letter
-    this.socket.on('clickedLetter', (letter) => {
-      // call dispatch to update letters in store/state
-      updateLetter(letter);
-      // console.log('letter and dbAnswer in GameRoom comp', letter, dbAnswer);
-      // check if answer in state has the letter
-      // eslint-disable-next-line react/destructuring-assignment
-      if (this.props.dbAnswer.includes(letter)) {
+      // create socket listener for clicked letter
+      this.socket.on('clickedLetter', (letter) => {
+        console.log('clickedletteris ', letter);
+        // call dispatch to update letters in store/state
+        updateLetter(letter);
+        // console.log('letter and dbAnswer in GameRoom comp', letter, dbAnswer);
+        // check if answer in state has the letter
+        // eslint-disable-next-line react/destructuring-assignment
+        if (this.props.dbAnswer.includes(letter)) {
         // call dispatch to update the display answer
-        updateDisplayAnswer(letter);
-      } else {
+          updateDisplayAnswer(letter);
+        } else {
         // this.setState({ numFailedGuesses: this.state.numFailedGuesses + 1 });
-        incrementFailedGuesses();
-      }
+          incrementFailedGuesses();
+        }
+      });
+      this.socket.on('newQ', (question, answer) => {
+        console.log('new question trigger');
+        console.log('new question SOCKET triggered', question, answer);
+        newQuestionNoFetch(question, answer);
+      });
     });
+    // get a new question (dispatch to props)
+    // todo set socket.on for new question
+
+    // todo change this to emit for a new question?
+    // newQuestion();
+
 
     // single line of code to handle keypresses (sends to letterClicked method)
     document.addEventListener('keypress', (e) => this.letterClicked(e.key.toLowerCase()));
@@ -101,34 +101,41 @@ class GameRoom extends Component {
   // this probably isn't doing it's job because the event listener function
   // in Comp Did Mount is anonymous https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener
   componentWillUnmount() {
-    document.removeEventListener('keypress');
+    document.removeEventListener('keypress', (e) => this.letterClicked(e.key.toLowerCase()));
   }
 
   // change state when letter is selected
   letterClicked(letter) {
     // if (String.toCharCode())
     // console.log('letter clicked was:', letter, letter.charCodeAt(0));
+    this.socket.emit('newQ', 'random Q', 'random A');
 
-    const { newQuestion } = this.props;
+    // const { newQuestion } = this.props;
     // only allow lower case letters, or ENTER for newQuestion
-    if (letter === 'enter') newQuestion();
-    else if (letter.charCodeAt(0) >= 97 && letter.charCodeAt(0) <= 122) {
+    if (letter === 'enter') {
+      // console.log('new question clicked!');
+      fetch('/newPrompt', {
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((res) => res.json())
+        .then(({ question, answer }) => {
+          console.log('--in fetch: question and answer', question, answer);
+
+          // this.props.newQuestionNoFetch(question, answer);
+          // console.log('props are', this.props);
+          // console.log('socket obj is', this.socket);
+          // console.log('this is', this);
+          // todo emit to socketio with new question and answer?
+          this.socket.emit('newQ', question, answer);
+        })
+        .catch((err) => console.log('FETCH ERRORRRRRR', err));
+    } else if (letter.charCodeAt(0) >= 97 && letter.charCodeAt(0) <= 122) {
+      console.log('letter clicked socket obj is', this.socket);
       this.socket.emit('clickedLetter', letter);
     }
-    // destructure props
-    // const { updateLetter, dbAnswer, updateDisplayAnswer } = this.props;
-
-    // console.log('in letterClicked', this.props);
-    // the variable e is a string of the letter that is clicked
-
-    // dispatch action to update the letter object in store/state
-    // updateLetter(letter);
-
-    // // check if answer in state has the letter
-    // if (dbAnswer.includes(letter)) {
-    //   // call dispatch to update the display answer
-    //   updateDisplayAnswer(letter);
-    // }
   }
 
   render() {
@@ -137,24 +144,29 @@ class GameRoom extends Component {
     // destructure props
     const {
       dbQuestion, dbAnswer, hangingPrompts, numberOfFailedGuesses, letters, displayAnswer,
-      newQuestion,
+      newQuestionNoFetch,
     } = this.props;
 
     // return all the things and stuff to render
     return (
       <div className="App">
-        <Clue clue={dbQuestion} newQuestion={newQuestion} />
-        <HangViewer
-          hang={hangingPrompts}
-          numFailedGuesses={numberOfFailedGuesses}
-        />
+        <header className="splash__header">
+          <h1 className="splash__title">SocketMan</h1>
+          <span className="splash__version">x2</span>
+        </header>
+        <HangingDude numberOfFailedGuesses={numberOfFailedGuesses} />
         <LetterWrapper
           letters={letters}
           letterClicked={this.letterClicked}
           answer={dbAnswer}
           disp={displayAnswer}
         />
-        <HangingDude numberOfFailedGuesses={numberOfFailedGuesses} />
+        {/* There's going to be an issue with newQUestion being passed down like this... */}
+        <Clue clue={dbQuestion} newQuestion={newQuestionNoFetch} />
+        <HangViewer
+          hang={hangingPrompts}
+          numFailedGuesses={numberOfFailedGuesses}
+        />
       </div>
     );
   }

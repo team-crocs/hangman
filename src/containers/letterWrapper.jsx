@@ -1,5 +1,3 @@
-/* eslint-disable linebreak-style */
-// ^wtf is this rule...
 import React from 'react';
 import LetterSelector from '../components/letterSelector';
 import AnswerViewer from '../components/answerViewer';

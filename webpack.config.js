@@ -27,18 +27,8 @@ module.exports = {
   devServer: {
     historyApiFallback: true,
     contentBase: path.join(__dirname, 'public/'),
-    // !DEFAULT PORT IS 8080
-    // port: 3000,
     publicPath: 'http://localhost:3000/dist/',
     hot: true,
-    // proxy: {
-    //   // https://webpack.js.org/configuration/dev-server/#devserver-proxy
-    //   // return true for the context which means for all endpoints, proxy to the target
-    //   // the index also had to be set
-    //   context: () => true,
-    //   // !Original port was 80
-    //   target: 'http://localhost:3000',
-    // },
     proxy: {
       '/api': {
         target: 'http://localhost:3000',
@@ -57,5 +47,3 @@ module.exports = {
   },
   plugins: [new webpack.HotModuleReplacementPlugin()],
 };
-
-// https://github.com/webpack/webpack-dev-server/issues/1604

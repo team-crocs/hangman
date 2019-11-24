@@ -1,0 +1,95 @@
+.App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 0;
+}
+
+.letter-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.letter-wrapper__key {
+  color: #424242;
+  font-size: 12px;
+}
+
+.letter__list {
+  display: flex;
+  justify-content: center;
+  font-size: 28px;
+  margin: 12px 0;
+}
+
+.letter__item {
+  margin: 0 4px;
+}
+
+.letter__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 480px;
+  width: 100%;
+  margin: 16px;
+}
+
+.letter__button-item {
+  background-color: white;
+  border: 1px solid #424242;
+  font-size: 16px;
+  font-weight: 600;
+  height: 48px;
+  width: 48px;
+  margin: 0 2px 2px 2px;
+  cursor: pointer;
+}
+  .letter__button-item:hover {
+    background-color: #3d00e0;
+    color: white;
+  }
+  .letter__button-item:active {
+    outline: #90ee02 solid 1px;
+    opacity: .75;
+  }
+  .letter__button-item:disabled {
+    background-color: gray;
+  }
+  
+.clue {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #424242;
+  background-color: #90ee02;
+  font-weight: 600;
+  font-size: 18px;
+  padding: 15px 24px;
+}
+
+.clue__title {
+  font-size: 24px;
+}
+
+.hangviewer {
+  display: table;
+  text-align: center;
+  margin-top: 16px;
+}
+
+img {
+  height: 150px;
+  width: 150px;
+  object-fit: scale-down;
+  margin-top: 12px;
+}
+
+.new-question {
+  background-color: transparent;
+  border: none;
+  color: #424242;
+  margin-top: 8PX;
+}

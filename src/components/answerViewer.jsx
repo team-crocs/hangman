@@ -9,7 +9,7 @@ const AnswerViewer = ({ disp }) => {
   for (let i = 0; i < disp.length; i += 1) {
     dispCharArray.push(
       <span
-        className="answerLetter"
+        className="letter__item"
         key={i}
       >
         {`${disp[i]} `}
@@ -18,7 +18,7 @@ const AnswerViewer = ({ disp }) => {
   }
 
   return (
-    <div id="answerViewer">
+    <div className="letter__list">
       {dispCharArray}
     </div>
   );
